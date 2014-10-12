@@ -1,0 +1,59 @@
+<?php 
+
+set_time_limit(0);
+class up_file_140519 extends SystemAction{
+
+
+	/*字段添加*/
+	function init(){
+	
+		$db = System::load_sys_class("model");
+		/*圈子表*/
+		$q1 = $db->Query("ALTER TABLE `@#_quanzi` ADD `shenhe` char(1) DEFAULT 'N' AFTER `glfatie`");
+		$q2 = $db->Query("ALTER TABLE `@#_quanzi` ADD `huifu` char(1) NOT NULL DEFAULT 'Y' AFTER `glfatie`");	
+		
+		/*帖子表*/
+		$q3 = $db->Query("ALTER TABLE `@#_quanzi_tiezi` ADD `shenhe` char(1) NOT NULL DEFAULT 'Y'");
+		$q4 = $db->Query("ALTER TABLE `@#_quanzi_tiezi` ADD `tiezi` int(10) unsigned NOT NULL DEFAULT '0' AFTER `qzid`");
+			
+		_message("字段升级成功,跳转到数据修复! 不要关闭本页面",WEB_PATH."/api/up_file_140519/tiezi");
+	}
+	
+	/*帖子表转化*/
+	function tiezi(){
+		$db = System::load_sys_class("model");
+		$t_list = $db->GetList("SELECT * FROM `@#_quanzi_hueifu` WHERE 1");
+		foreach($t_list as $sv){
+			$qz = $db->GetOne("SELECT id,qzid FROM `@#_quanzi_tiezi` WHERE `id` = '$sv[tzid]' LIMIT 1");
+			$db->Query("INSERT INTO `@#_quanzi_tiezi` (`qzid`,`tiezi`,`hueiyuan`,`neirong`,`shenhe`,`time`) VALUES ('$qz[qzid]','$sv[tzid]','$sv[hueiyuan]','$sv[hueifu]','Y','$sv[hftime]')");
+		}
+		
+		_message("帖子表转化成功,跳转到数据修复! 不要关闭本页面",WEB_PATH."/api/up_file_140519/up1");
+	}
+		
+	/*会员表加入的圈子修复*/
+	function up1(){
+		$db = System::load_sys_class("model");
+		$mlist = $db->GetList("SELECT uid,addgroup FROM `@#_member` WHERE `addgroup` is not null");
+		foreach($mlist as $m){
+			$m['addgroup'] = str_ireplace(",,",",",$m['addgroup']);
+			$m['addgroup'] = trim($m['addgroup'],",");
+			$m['addgroup'] .= ",";
+			$db->Query("UPDATE `@#_member` SET `addgroup` = '$m[addgroup]' WHERE `uid` = '$m[uid]'");
+		}
+		
+		_message("会员表加入的圈子修复成功,正在跳转! 不要关闭本页面",WEB_PATH."/api/up_file_140519/upok");
+	}
+	
+	
+	/*完成*/
+	function upok(){
+		rename(__FILE__,__FILE__.".ok");
+		_message("数据库全部修复成功",WEB_PATH);
+	}
+	
+	
+
+
+
+}

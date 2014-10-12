@@ -1,0 +1,103 @@
+<?php 
+
+set_time_limit(0);
+class up_file_140521 extends SystemAction{
+
+
+	/*字段添加*/
+	function init(){
+		/*AFTER 字段添加顺序*/
+	
+		$db = System::load_sys_class("model");
+		/*栏目表*/
+		$q1 = $db->Query("ALTER TABLE `@#_category` ADD `cids` varchar(100) DEFAULT NULL AFTER `parentid`");
+		$q2 = $db->Query("ALTER TABLE `@#_category` ADD `html` tinyint(1) NOT NULL DEFAULT '0' AFTER `channel`");
+		
+		/*文章表*/
+		$q3 = $db->Query("ALTER TABLE `@#_article` MODIFY COLUMN `thumb` varchar(255)");
+		$q4 = $db->Query("ALTER TABLE `@#_article`  ADD `url` varchar(250) DEFAULT NULL AFTER `description`");
+		
+		_message("栏目字段升级成功,跳转到数据修复! 不要关闭本页面",WEB_PATH."/api/".ROUTE_C."/guanxiup");
+	}
+	
+	
+	/*栏目关系升级*/	
+	function guanxiup(){
+		$db = System::load_sys_class("model");
+		$categorys=$db->GetList("SELECT * FROM `@#_category` WHERE 1 order by `parentid` ASC,`cateid` ASC",array('key'=>'cateid'));
+		foreach($categorys as $v){
+			if($v['parentid'] != '0'){
+				$cids = "0,".$v['parentid'].",".$v['cateid'].',';
+				$db->Query("UPDATE `@#_category` SET `cids` = '$cids' WHERE `cateid` = '$v[cateid]'");
+			}else{
+				$cids = "0,";
+				$db->Query("UPDATE `@#_category` SET `cids` = '$cids' WHERE `cateid` = '$v[cateid]'");
+			}		
+		}
+		_message("栏目关系升级成功,跳转到数据修复! 不要关闭本页面",WEB_PATH."/api/".ROUTE_C."/cateup");
+	
+	}
+	
+	/*
+		栏目模板升级
+	*/
+	public function cateup(){
+		$db = System::load_sys_class("model");
+		$categorys=$db->GetList("SELECT * FROM `@#_category` WHERE `model` != '-1'",array('key'=>'cateid'));
+		foreach($categorys as $k=>$v){
+			$uninfo = unserialize($v['info']);
+			//$categorys[$k]['info'] = $uninfo;
+			if(isset($uninfo['template_list']) && isset($uninfo['template_show'])){
+				_message("栏目模板升级成功,跳转到数据修复! 不要关闭本页面",WEB_PATH."/api/".ROUTE_C."/upfile");
+				return;
+			}
+			if($v['model']==2){
+				$uninfo['template_list'] = "article_list.list.html";
+				$uninfo['template_show'] = "article_show.help.html";
+			}
+			if($v['model']==1){
+				$uninfo['template_list'] = "goods_list.list.html";
+				$uninfo['template_show'] = "goods_show.show.html";
+			}
+			$uninfo = serialize($uninfo);
+			$db->Query("UPDATE `@#_category` SET `info` = '$uninfo' WHERE `cateid`='$k'");
+		}
+		
+		_message("栏目模板升级成功,跳转到数据修复! 不要关闭本页面",WEB_PATH."/api/".ROUTE_C."/upfile");
+	
+	}
+
+	/*模板文件修复*/
+	function upfile(){
+		$path=G_TEMPLATES.G_STYLE.DIRECTORY_SEPARATOR.G_STYLE_HTML.DIRECTORY_SEPARATOR;
+		if(file_exists($path."help.help.html")){
+			rename($path."help.help.html",$path."article_show.help.html");
+		}
+		if(!file_exists($path."article_show.show.html")){
+			file_put_contents($path."article_show.show.html","请修改模板内容");
+		}
+		if(!file_exists($path."article_list.list.html")){
+			file_put_contents($path."article_list.list.html","请修改模板内容");
+		}		
+		if(!file_exists($path."goods_show.show.html")){
+			file_put_contents($path."goods_show.show.html","请修改模板内容");
+		}
+		if(!file_exists($path."goods_list.list.html")){
+			file_put_contents($path."goods_list.list.html","请修改模板内容");
+		}
+	
+		_message("模板文件修复成功,跳转到数据修复! 不要关闭本页面",WEB_PATH."/api/".ROUTE_C."/upok");
+	
+	}
+
+	/*完成*/
+	function upok(){		
+		rename(__FILE__,__FILE__.".".time());
+		_message("数据库全部修复成功",WEB_PATH);
+	}
+	
+	
+
+
+
+}
