@@ -4,7 +4,7 @@ return array(
 'web_name' => '运购吧',//网站名
 'web_key' => '运购吧',//网站关键字
 'web_des' => '运购吧——工大人自己的云购网',//网站介绍
-'web_path' => 'http://www.yg.com/',//网站地址
+'web_path' => '',//网站地址
 'templates_edit' => '1',//是否允许在线编辑模板
 'templates_name' => 'yungou',//当前模板方案
 'charset' => 'utf-8',//网站字符集
