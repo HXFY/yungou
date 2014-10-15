@@ -1,0 +1,16 @@
+[13-Oct-2014 20:57:25 Asia/Shanghai] PHP Warning:  mysql_connect(): Access denied for user 'root'@'localhost' (using password: YES) in G:\wamp\www\yungouba\system\libs\mysql.class.php on line 60
+[13-Oct-2014 20:57:25 Asia/Shanghai] PHP Stack trace:
+[13-Oct-2014 20:57:25 Asia/Shanghai] PHP   1. {main}() G:\wamp\www\yungouba\index.php:0
+[13-Oct-2014 20:57:25 Asia/Shanghai] PHP   2. System::CreateApp() G:\wamp\www\yungouba\index.php:60
+[13-Oct-2014 20:57:25 Asia/Shanghai] PHP   3. System::load_sys_class() G:\wamp\www\yungouba\system\libs\system.class.php:189
+[13-Oct-2014 20:57:25 Asia/Shanghai] PHP   4. application->__construct() G:\wamp\www\yungouba\system\libs\system.class.php:28
+[13-Oct-2014 20:57:25 Asia/Shanghai] PHP   5. application->global_init() G:\wamp\www\yungouba\system\libs\application.class.php:17
+[13-Oct-2014 20:57:25 Asia/Shanghai] PHP   6. application->global_controller() G:\wamp\www\yungouba\system\libs\application.class.php:24
+[13-Oct-2014 20:57:25 Asia/Shanghai] PHP   7. index->__construct() G:\wamp\www\yungouba\system\libs\application.class.php:39
+[13-Oct-2014 20:57:25 Asia/Shanghai] PHP   8. base->__construct() G:\wamp\www\yungouba\system\modules\go\index.action.php:11
+[13-Oct-2014 20:57:25 Asia/Shanghai] PHP   9. System::load_sys_class() G:\wamp\www\yungouba\system\modules\member\lib\base.class.php:9
+[13-Oct-2014 20:57:25 Asia/Shanghai] PHP  10. model->__construct() G:\wamp\www\yungouba\system\libs\system.class.php:28
+[13-Oct-2014 20:57:25 Asia/Shanghai] PHP  11. mysql::GetObject() G:\wamp\www\yungouba\system\libs\model.class.php:38
+[13-Oct-2014 20:57:25 Asia/Shanghai] PHP  12. mysql->__construct() G:\wamp\www\yungouba\system\libs\mysql.class.php:98
+[13-Oct-2014 20:57:25 Asia/Shanghai] PHP  13. mysql->connect() G:\wamp\www\yungouba\system\libs\mysql.class.php:41
+[13-Oct-2014 20:57:25 Asia/Shanghai] PHP  14. mysql_connect() G:\wamp\www\yungouba\system\libs\mysql.class.php:60

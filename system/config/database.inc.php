@@ -12,7 +12,7 @@ return array(
 
 		'username' => 'root',
 
-		'password' => '2012212984',
+		'password' => '',
 
 		'tablepre' => 'go_',
 
